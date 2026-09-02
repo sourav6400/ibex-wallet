@@ -508,6 +508,21 @@
         });
 
         $(document).ready(function() {
+            document.querySelectorAll('.js-local-time[data-timestamp]').forEach(function(el) {
+                var date = new Date(Number(el.getAttribute('data-timestamp')) * 1000);
+                if (Number.isNaN(date.getTime())) {
+                    return;
+                }
+                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                var day = String(date.getDate()).padStart(2, '0');
+                var hours = date.getHours();
+                var ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                var minutes = String(date.getMinutes()).padStart(2, '0');
+                el.textContent = months[date.getMonth()] + ' ' + day + ', ' + date.getFullYear() + ' ' + String(hours).padStart(2, '0') + ':' + minutes + ' ' + ampm;
+            });
+
             var $table = $('#dataTable');
             if ($table.length) {
                 $table.DataTable({

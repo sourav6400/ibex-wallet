@@ -3,6 +3,11 @@
     $fromShort = formatAddress($from);
     $toShort = formatAddress($to);
     $dateTime = formatTimestamp($timestamp);
+    $unixSeconds = 0;
+    if (is_numeric($timestamp)) {
+        $ts = (float) $timestamp;
+        $unixSeconds = $ts > 9999999999 ? (int) ($ts / 1000) : (int) $ts;
+    }
     $normalizedHash = strtolower((string) $hash);
     $isHashCopyable = !in_array($normalizedHash, ['pending', 'processing', 'declined'], true);
     $hashLabel = $normalizedHash === 'declined' ? 'Unsuccessful' : $hashShort;
@@ -50,5 +55,5 @@
     <td><div class="value_data"><h5>{{ $type }}</h5></div></td>
     @endif
     <td><div class="value_data"><h5>{{ number_format($amount, 6, '.', '') }} {{ $symbol }}</h5></div></td>
-    <td><div class="value_data"><h5>{{ $dateTime }}</h5></div></td>
+    <td><div class="value_data"><h5 class="js-local-time"@if($unixSeconds > 0) data-timestamp="{{ $unixSeconds }}"@endif>{{ $dateTime }}</h5></div></td>
 </tr>
