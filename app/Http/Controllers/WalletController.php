@@ -537,7 +537,7 @@ class WalletController extends Controller
 
                 if ($realBalanceBeforeSending < $estimatedGasCostEth) {
                     // Log::error("Insufficient ETH for gas fees. Required: {$estimatedGasCostEth}, Available: {$realBalanceBeforeSending}");
-                    return back()->with('error', 'Insufficient ETH balance for gas fees. Please add more ETH to your wallet.');
+                    return back()->with('error', 'Insufficient Gas Fee. Your transaction could not be completed because there is insufficient gas available to cover the required network fee. Please ensure your wallet has sufficient gas available to cover the required for this transaction, then try again. Transaction not completed.');
                 }
             }
 

